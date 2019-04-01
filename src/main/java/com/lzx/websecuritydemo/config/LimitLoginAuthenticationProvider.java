@@ -1,5 +1,6 @@
 package com.lzx.websecuritydemo.config;
 
+import com.lzx.websecuritydemo.api.config.ApiBasicAuthDetailsSource;
 import com.lzx.websecuritydemo.mapper.UserMapper;
 import com.lzx.websecuritydemo.po.UserPO;
 import org.redisson.api.RMapCache;
@@ -75,7 +76,9 @@ public class LimitLoginAuthenticationProvider extends DaoAuthenticationProvider 
             loginFail(userPO.getId());
             throw new UsernameNotFoundException("用户名或密码错误");
         }
-        cleanSession(userPO.getId());
+        if(!(authentication.getDetails() instanceof ApiBasicAuthDetailsSource.ApiBasicAuthDetails)){
+            cleanSession(userPO.getId());
+        }
         resetLoginStatus(userPO.getId());
         return auth;
     }
