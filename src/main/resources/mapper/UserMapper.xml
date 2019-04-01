@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lzx.websecuritydemo.mapper.UserMapper">
+    <resultMap id="userMap" type="com.lzx.websecuritydemo.po.UserPO">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="password" property="password"/>
+        <result column="is_lock" property="isLock"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <insert id="addUser">
+        insert into user(name,password) values(#{name},#{password})
+    </insert>
+
+    <update id="unLockAccount">
+        update user set is_lock='N' where id=#{id}
+    </update>
+    <update id="lockAccount">
+        update user set is_lock='Y' where id=#{id}
+    </update>
+
+    <select id="getUserByName" resultMap="userMap">
+        select * from user where name=#{name}
+    </select>
+    <select id="getUserById" resultMap="userMap">
+        select * from user where id=#{id}
+    </select>
+</mapper>
