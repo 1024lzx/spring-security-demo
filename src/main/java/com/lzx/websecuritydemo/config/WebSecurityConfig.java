@@ -53,6 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception { //配置策略
         http.csrf().disable();
         http.antMatcher("/**").authorizeRequests()
+                .antMatchers("/pagelogin").permitAll()
                 .anyRequest().authenticated().
                 and().formLogin().permitAll().successHandler(loginSuccessHandler()).failureHandler(simpleUrlAuthenticationFailureHandler()).
                 and().logout().permitAll().invalidateHttpSession(true).deleteCookies("JSESSIONID").logoutSuccessHandler(logoutSuccessHandler()).
@@ -73,14 +74,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
             @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                UserPO userDetails = (UserPO) authentication.getPrincipal();
+                /*UserPO userDetails = (UserPO) authentication.getPrincipal();
                 UserVO userVO = userObjectMapper.po2vo(userDetails);
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
                 try (PrintWriter writer = response.getWriter()) {
                     objectMapper.writeValue(writer, userVO);
                 }
-                response.getWriter().flush();
+                response.getWriter().flush();*/
+                response.sendRedirect("/");
                 clearAuthenticationAttributes(request);
             }
         };
@@ -114,17 +116,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         };
     }
 
-    @Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
         return new AuthenticationEntryPoint() {
             @Override
             public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
-                httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                /*httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 httpServletRequest.setCharacterEncoding("UTF-8");
                 httpServletResponse.setContentType("application/json; charset=utf-8");
                 try (PrintWriter writer = httpServletResponse.getWriter()) {
                     objectMapper.writeValue(writer, "未授权的访问");
-                }
+                }*/
+                httpServletResponse.sendRedirect("/pagelogin");
             }
         };
     }
